@@ -77,7 +77,6 @@ class ZRP(BaseZRP):
     def __init__(self, file_path=None, pipe_path=None, *args, **kwargs):
         super().__init__(file_path=file_path, *args, **kwargs)
         self.pipe_path = pipe_path
-        self.params_dict =  kwargs
 
     def fit(self):
         return self
@@ -93,7 +92,6 @@ class ZRP(BaseZRP):
         """
         renamed_columns = {self.first_name: "first_name", self.middle_name: "middle_name", self.last_name: "last_name", self.house_number: "house_number", self.street_address: "street_address", self.city: "city", self.state: "state", self.zip_code: "zip_code"}
         data = data.rename(columns=renamed_columns)
-        # self.params_dict = {}
         return data
     
     def check_for_old_files(self):
@@ -167,17 +165,17 @@ class ZRP(BaseZRP):
             print(f'Processing rows: {chunk*chunk_size}:{(chunk+1)*chunk_size}')
             print("####################################")
             data_chunk = data[chunk*chunk_size:(chunk+1)*chunk_size]
-            z_prepare = ZRP_Prepare(file_path=self.file_path, **self.params_dict)
+            z_prepare = ZRP_Prepare(file_path=self.file_path, **self.extra_params)
             z_prepare.fit(data_chunk)
             prepared_data_chunk = z_prepare.transform(data_chunk)
 
-            z_predict = ZRP_Predict(file_path=self.file_path, pipe_path=self.pipe_path, **self.params_dict)
+            z_predict = ZRP_Predict(file_path=self.file_path, pipe_path=self.pipe_path, **self.extra_params)
             z_predict.fit(prepared_data_chunk)
             predict_out_chunk = z_predict.transform(prepared_data_chunk, save_table = False)
             predict_out_list.append(predict_out_chunk)
             
             if self.bisg:
-                bisgw = BISGWrapper(**self.params_dict)
+                bisgw = BISGWrapper(**self.extra_params)
                 bisg_proxies_chunk = bisgw.transform(prepared_data_chunk[~prepared_data_chunk.index.duplicated(keep='first')])
                 full_bisg_proxies_list.append(bisg_proxies_chunk)
            

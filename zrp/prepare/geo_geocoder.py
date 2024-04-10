@@ -62,10 +62,9 @@ class ZGeo(BaseZRP):
         Path indicating where to put artifacts folder its files (pipeline, model, and supporting data), generated during intermediate steps.
     """
 
-    def __init__(self, file_path=None, *args, **kwargs):
-        super().__init__(file_path=file_path, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, kwargs)
         self.key = 'ZEST_KEY'
-        self.params_dict =  kwargs    
 
     def fit(self):
         return self
@@ -126,7 +125,7 @@ class ZGeo(BaseZRP):
             data = load_file(self.file_path)
             print("   Data file is loaded")
             
-        prg = ProcessGeo(**self.params_dict)
+        prg = ProcessGeo(**self.extra_params)
         data = prg.transform(data, processed=processed, replicate=replicate)
         print("   [Start] Mapping geo data")        
         if len(geo)>2:

@@ -28,9 +28,8 @@ class ZRP_Prepare(BaseZRP):
         Path where to put artifacts and other files generated during intermediate steps.
     """
     
-    def __init__(self, file_path=None, *args, **kwargs):
-        super().__init__(file_path=file_path, *args, **kwargs)
-        self.params_dict =  kwargs
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         
     def fit(self, input_data):
@@ -80,7 +79,7 @@ class ZRP_Prepare(BaseZRP):
         if not ((len(os.listdir(geo_folder)) > 0) &
                 (len(os.listdir(acs_folder)) > 0)):
             raise AssertionError("Missing required support files please see the README for how to download the support files: https://github.com/zestai/zrp/blob/main/README.rst#install ") 
-        gen_process = ProcessStrings(file_path=self.file_path, **self.params_dict)
+        gen_process = ProcessStrings(file_path=self.file_path, **self.extra_params)
         gen_process.fit(data)
         data = gen_process.transform(data)
         
@@ -92,7 +91,7 @@ class ZRP_Prepare(BaseZRP):
         data['zest_in_state_fips'] = data[self.state].replace(inv_state_map)
         print("")
 
-        geocode = ZGeo(file_path=self.file_path, **self.params_dict)
+        geocode = ZGeo(file_path=self.file_path, **self.extra_params)
         geocode_out = [] 
         geo_grps = data.groupby([self.state])
         geo_dict = {}
@@ -165,7 +164,7 @@ class ZRP_Prepare(BaseZRP):
         save_json(acs_validator, self.out_path, "input_acs_validator.json")
         print("   [Completed] Validating ACS input data")
         print("")
-        amp = ACSModelPrep(**self.params_dict)
+        amp = ACSModelPrep(**self.extra_params)
         amp.fit()
         data_out = amp.transform(geo_coded, False)
         print("[Complete] Preparing ACS data")

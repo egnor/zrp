@@ -65,7 +65,7 @@ class BaseZRP():
                  street_address="street_address", city="city", state="state", zip_code="zip_code", race='race',
                  census_tract=None, block_group=None, street_address_2=None, name_prefix=None, name_suffix=None,
                  na_values=None, file_path=None, geocode=True, bisg=True, readout=True, n_jobs=-1, year="2019",
-                 span="5", runname=None):
+                 span="5", runname=None, **kwargs):
         self.key = key
         self.first_name = first_name
         self.middle_name = middle_name
@@ -90,10 +90,8 @@ class BaseZRP():
         self.year = year
         self.span = span
         self.runname = runname
-        if file_path:
-            self.out_path = os.path.join(self.file_path, "artifacts")
-        else:
-            self.out_path = "artifacts"
+        self.out_path = os.path.join(self.file_path or "", "artifacts")
+        self.extra_params = kwargs
 
         super().__init__()
 

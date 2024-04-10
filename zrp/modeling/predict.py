@@ -352,10 +352,9 @@ class ZRP_Predict(BaseZRP):
         Path indicating where to put artifacts folder its files (pipeline, model, and supporting data), generated during intermediate steps.
     """
 
-    def __init__(self, pipe_path, file_path=None, *args, **kwargs):
-        super().__init__(file_path=file_path, *args, **kwargs)
+    def __init__(self, pipe_path, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.pipe_path = pipe_path
-        self.params_dict = kwargs
         self.census_tract = 'GEOID_CT'
         self.block_group = 'GEOID_BG'
         self.zip_code = 'GEOID_ZIP'
@@ -526,31 +525,31 @@ class ZRP_Predict(BaseZRP):
             
         out_list = []
         if not df_0.empty:    # BG & Names
-            zrp_bg_complete = ZRP_Predict_BlockGroup(self.pipe_path, **self.params_dict)
+            zrp_bg_complete = ZRP_Predict_BlockGroup(self.pipe_path, **self.extra_params)
             out_0 = zrp_bg_complete.transform(df_0.filter(flb))
             out_list.append(out_0)    
         if not df_1.empty:    # CT & Names
-            zrp_ct_complete = ZRP_Predict_CensusTract(self.pipe_path, **self.params_dict)
+            zrp_ct_complete = ZRP_Predict_CensusTract(self.pipe_path, **self.extra_params)
             out_1 = zrp_ct_complete.transform(df_1.filter(flc))
             out_list.append(out_1)    
         if not df_2.empty:    # ZC & Names
-            zrp_zp_complete = ZRP_Predict_ZipCode(self.pipe_path, **self.params_dict)
+            zrp_zp_complete = ZRP_Predict_ZipCode(self.pipe_path, **self.extra_params)
             out_2 = zrp_zp_complete.transform(df_2.filter(flz))
             out_list.append(out_2)    
         if not df_3.empty:    # BC Only
-            zrp_bg_geo_only = ZRP_Predict_BlockGroup(self.pipe_path, **self.params_dict)
+            zrp_bg_geo_only = ZRP_Predict_BlockGroup(self.pipe_path, **self.extra_params)
             out_3 = zrp_bg_geo_only.transform(df_3.filter(flb), geo_only=True)
             out_list.append(out_3)  
         if not df_4.empty:    # CT Only
-            zrp_ct_geo_only = ZRP_Predict_CensusTract(self.pipe_path, **self.params_dict)
+            zrp_ct_geo_only = ZRP_Predict_CensusTract(self.pipe_path, **self.extra_params)
             out_4 = zrp_ct_geo_only.transform(df_4.filter(flc), geo_only=True)
             out_list.append(out_4)   
         if not df_5.empty:    # ZC Only
-            zrp_zp_geo_only = ZRP_Predict_ZipCode(self.pipe_path, **self.params_dict)
+            zrp_zp_geo_only = ZRP_Predict_ZipCode(self.pipe_path, **self.extra_params)
             out_5 = zrp_zp_geo_only.transform(df_5.filter(flz), geo_only=True)
             out_list.append(out_5)  
         if not df_6.empty:    # BISG
-            bisgw = BISGWrapper(**self.params_dict)
+            bisgw = BISGWrapper(**self.extra_params)
             bisgw.fit(df_6)
             out_6 = bisgw.transform(df_6)
 
@@ -572,7 +571,7 @@ class ZRP_Predict(BaseZRP):
                     (records_failed_bisg_proxy['has_last_name'] == 1)
                 ]     
                 if not df_7.empty:
-                    zrp_names_only = ZRP_Predict_BlockGroup(self.pipe_path, **self.params_dict)
+                    zrp_names_only = ZRP_Predict_BlockGroup(self.pipe_path, **self.extra_params)
                     out_7 = zrp_names_only.transform(df_7.filter(flb), name_only=True)
                     out_list.append(out_7)  
 
