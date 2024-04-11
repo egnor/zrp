@@ -74,8 +74,8 @@ class ZRP(BaseZRP):
     runname: str, default 'test'
     """
 
-    def __init__(self, file_path=None, pipe_path=None, *args, **kwargs):
-        super().__init__(file_path=file_path, *args, **kwargs)
+    def __init__(self, pipe_path=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.pipe_path = pipe_path
 
     def fit(self):
