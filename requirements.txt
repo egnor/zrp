@@ -11,4 +11,4 @@ pycm~=3.3
 scikit_learn~=1.0
 surgeo~=1.1
 tqdm~=4.46
-xgboost~=1.0
+xgboost==1.0.2
